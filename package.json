@@ -1,0 +1,26 @@
+{
+  "name": "mentorq-discord-bot",
+  "version": "1.0.0-dev",
+  "description": "HackRU Discord bot to facilitate a mentor queue system.",
+  "main": "./bot/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HackRU/MentorQ-Discord-Bot.git"
+  },
+  "author": "DaStormer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/HackRU/MentorQ-Discord-Bot/issues"
+  },
+  "homepage": "https://github.com/HackRU/MentorQ-Discord-Bot#readme",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.54.0"
+  }
+}

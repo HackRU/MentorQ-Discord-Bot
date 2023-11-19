@@ -1,0 +1,7 @@
+{
+    "eslint.onIgnoredFiles": "off",
+    "eslint.validate": [
+       ".eslintrc",
+    ],
+    "editor.tabSize": 4
+}
