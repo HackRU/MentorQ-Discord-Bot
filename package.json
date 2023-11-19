@@ -4,7 +4,9 @@
   "description": "HackRU Discord bot to facilitate a mentor queue system.",
   "main": "./bot/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node bot/index.js",
+    "deploy-cmds": "node scripts/deploy-commands.js"
   },
   "repository": {
     "type": "git",
