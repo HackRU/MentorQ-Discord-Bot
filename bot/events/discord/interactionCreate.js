@@ -38,6 +38,8 @@ class InteractionCreateEvent extends Event {
         if (!interaction.guild.members.me.permissions.has("Administrator"))
             return interaction.reply({ ephemeral: true, embeds: [this.MentorQ.util.errorEmbed("I require `ADMINISTRATOR` permission in this server.")] }).catch(() => { });
 
+        if (this.MentorQ.util.handleCooldown(command, interaction)) return;
+
         command.run(interaction).catch(err => {
             console.error(`INTERACTION (${command.config.name}) ERROR | EXECUTOR: ${interaction.user.username} | GUILD: ${interaction.guild?.name || "N/A"} |\n INTERACTION DATA: ${interaction.options?.data ? JSON.stringify(interaction.options.data) : "N/A"} |\n` + err.stack);
 

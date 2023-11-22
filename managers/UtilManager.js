@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, Collection } = require("discord.js");
 
 class UtilManager {
     /**
@@ -108,6 +108,42 @@ class UtilManager {
             }
 
         });
+    }
+
+    /**
+     * Handle command cooldown.
+     * @param {import("../Structures/Base/BaseCommand")} command Command whose cooldown is being handled.
+     * @param {import("discord.js").Message|import("discord.js").Interaction} context Message or interaction associated with the executed command.
+     */
+    handleCooldown(command, context) {
+        const userID = (context.author || context.member || context.user).id;
+
+        if (!this.MentorQ.cooldowns.has(command.config.name))
+            this.MentorQ.cooldowns.set(command.config.name, new Collection());
+
+        const now = Date.now();
+        const cdUsers = this.MentorQ.cooldowns.get(command.config.name);
+        const cooldownDuration = (command.config.cooldown || 0) * 1000;
+
+        if (cdUsers.has(userID)) {
+            const expDate = cdUsers.get(userID) + cooldownDuration;
+
+            if (now < expDate) {
+                const timeLeft = (expDate - now) / 1000;
+                const cooldownEmbed = this.MentorQ.util.errorEmbed(`Command cooldown: \`${timeLeft.toPrecision(2)} seconds\` remaining.`);
+                if (context.token) context.reply({ ephemeral: true, embeds: [cooldownEmbed] });
+                else {
+                    context.reply({ embeds: [cooldownEmbed] }).then(msg => {
+                        setTimeout(() => msg.delete(), 3000);
+                    });
+                }
+                return true;
+            }
+        }
+
+        if (!this.MentorQ.config.developers.includes(userID)) cdUsers.set(userID, now);
+        setTimeout(() => cdUsers.delete(userID), cooldownDuration);
+        return false;
     }
 
 }

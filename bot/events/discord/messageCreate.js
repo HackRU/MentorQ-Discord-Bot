@@ -42,6 +42,8 @@ class MessageCreateEvent extends Event {
         if (command.config.args && !args.length)
             return message.reply({ embeds: [this.MentorQ.util.errorEmbed("This command requires arguments. Use `help [command]` to see the proper command usage.")] });
 
+        if (this.MentorQ.util.handleCooldown(command, message)) return;
+
         command.run(message, args).catch(err => {
             console.error(`COMMAND (${command.config.name}) ERROR | EXECUTOR: ${message.author.username} | GUILD: ${message.guild.name} |\n` + err.stack);
 
