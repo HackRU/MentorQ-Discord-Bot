@@ -37,10 +37,10 @@ class MessageCreateEvent extends Event {
 
         // bot requires admin permission to avoid dealing w/ individual role and channel permission checks (may change in the future)
         if (!message.guild.members.me.permissions.has("Administrator"))
-            return message.reply({ embeds: [this.MentorQ.errorEmbed("I require `ADMINISTRATOR` permission in this server.")] });
+            return message.reply({ embeds: [this.MentorQ.util.errorEmbed("I require `ADMINISTRATOR` permission in this server.")] });
 
         if (command.config.args && !args.length)
-            return message.reply({ embeds: [this.MentorQ.errorEmbed("This command requires arguments. Use `help [command]` to see the proper command usage.")] });
+            return message.reply({ embeds: [this.MentorQ.util.errorEmbed("This command requires arguments. Use `help [command]` to see the proper command usage.")] });
 
         command.run(message, args).catch(err => {
             console.error(`COMMAND (${command.config.name}) ERROR | EXECUTOR: ${message.author.username} | GUILD: ${message.guild.name} |\n` + err.stack);
@@ -59,7 +59,7 @@ class MessageCreateEvent extends Event {
 
             this.MentorQ.logs.send({ embeds: [errorEmbed] });
 
-            message.reply({ embeds: [this.MentorQ.errorEmbed("An internal error has occurred. Developers have been notified. Please contact staff for further assistance.")] });
+            message.reply({ embeds: [this.MentorQ.util.errorEmbed("An internal error has occurred. Developers have been notified. Please contact staff for further assistance.")] });
         });
 
         return;
