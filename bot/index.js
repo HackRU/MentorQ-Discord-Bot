@@ -1,4 +1,4 @@
-const { Client, Collection, WebhookClient } = require("discord.js");
+const { Client, Collection, WebhookClient, EmbedBuilder } = require("discord.js");
 
 require("dotenv").config();
 
@@ -47,6 +47,24 @@ class MentorQClient extends Client {
         // initialize managers
         this.tickets = (require("../managers/TicketsManager"))(this);
         this.util = (require("../managers/UtilManager"))(this);
+
+    }
+
+    // default message embeds
+    successEmbed(text) {
+        const successEmbed = new EmbedBuilder()
+            .setColor("DarkGreen")
+            .setDescription("✅ " + text);
+
+        return successEmbed;
+    }
+
+    errorEmbed(text) {
+        const errorEmbed = new EmbedBuilder()
+            .setColor("Red")
+            .setDescription("❌ " + text);
+
+        return errorEmbed;
     }
 
     init() {
