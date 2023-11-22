@@ -93,7 +93,7 @@ class UtilManager {
 
                     if (isNaN(user.id ?? user)) throw "no member found";
 
-                    fetchedMember = await this.StormBeatz.users.fetch(user.id ?? user);
+                    fetchedMember = await this.MentorQ.users.fetch(user.id ?? user);
 
                     if (!fetchedMember?.id) throw "no member found";
                     else {
