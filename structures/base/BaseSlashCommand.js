@@ -29,6 +29,7 @@ class SlashCommand {
         this.MentorQ = client;
 
         // ensures commandData is properly formatted to load/register Discord app commands
+        commandConfig.commandData.name = commandConfig.name;
         commandConfig.commandData.type = ApplicationCommandType.ChatInput;
         commandConfig.commandData.defaultPermission = true;
         commandConfig.commandData.options = commandConfig.commandData.options?.map(o => { return { autocomplete: o.autocomplete, choices: o.choices, options: o.options, channelTypes: o.channelTypes, ...o } }) || [];
