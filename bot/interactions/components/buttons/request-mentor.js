@@ -5,6 +5,7 @@ class RequestMentorButton extends Component {
         super(client, {
             name: "request-mentor",
             category: "general",
+            cooldown: 5,
         });
     }
 

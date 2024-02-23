@@ -33,8 +33,8 @@ class TicketsManager {
             .addFields([
                 { name: "Name:", value: requestData.name, inline: true },
                 { name: "Team Members:", value: requestData.team, inline: true },
-                { name: "Programming Language:", value: requestData.language, inline: true },
-                { name: "Tech Stack", value: requestData.techStack },
+                { name: "Programming Language:", value: requestData.language },
+                { name: "Tech Stack:", value: requestData.techStack },
             ])
             .setFooter({ text: `User ID: ${member.id}` })
             .setTimestamp();
