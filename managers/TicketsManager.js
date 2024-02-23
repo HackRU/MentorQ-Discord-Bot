@@ -41,6 +41,8 @@ class TicketsManager {
 
         await this.getQueueChannel(member.guild).send({ embeds: [queueEmbed] });
 
+        return;
+
     }
 
     // claim(mentor, queueEmbed) {
@@ -142,7 +144,7 @@ class TicketsManager {
                 parent: category,
                 permissionOverwrites: [
                     { id: guild.id, deny: [PermissionFlagsBits.ViewChannel] },
-                    { id: mentorRole.id, deny: [PermissionFlagsBits.ViewChannel] },
+                    { id: mentorRole.id, allow: [PermissionFlagsBits.ViewChannel] },
                 ],
             });
 
@@ -152,7 +154,7 @@ class TicketsManager {
                 parent: category,
                 permissionOverwrites: [
                     { id: guild.id, deny: [PermissionFlagsBits.ViewChannel] },
-                    { id: mentorRole.id, deny: [PermissionFlagsBits.ViewChannel] },
+                    { id: mentorRole.id, allow: [PermissionFlagsBits.ViewChannel] },
                 ],
             });
 

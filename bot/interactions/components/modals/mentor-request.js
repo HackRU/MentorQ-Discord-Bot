@@ -29,6 +29,8 @@ class MentorRequestModal extends Component {
             interaction.reply({ embeds: [this.MentorQ.util.errorEmbed(err.message)], ephemeral: true });
         }
 
+        return;
+
     }
 }
 
