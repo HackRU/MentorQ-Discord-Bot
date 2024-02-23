@@ -9,7 +9,6 @@ class MentorRequestModal extends Component {
     }
 
     /**
-     * 
      * @param {import("discord.js").ModalSubmitInteraction} interaction 
      */
     async run(interaction) {

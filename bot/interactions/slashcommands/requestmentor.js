@@ -14,7 +14,6 @@ class RequestMentorSlashCommand extends SlashCommand {
     }
 
     /**
-     * 
      * @param {import("discord.js").CommandInteraction} interaction 
      */
     async run(interaction) {

@@ -10,7 +10,6 @@ class RequestMentorButton extends Component {
     }
 
     /**
-     * 
      * @param {import("discord.js").ButtonInteraction} interaction 
      */
     async run(interaction) {

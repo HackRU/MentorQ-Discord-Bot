@@ -37,6 +37,7 @@ class TicketsManager {
                 { name: "Tech Stack:", value: requestData.techStack },
             ])
             .setFooter({ text: `User ID: ${member.id}` })
+            .setColor("Yellow")
             .setTimestamp();
 
         await this.getQueueChannel(member.guild).send({ embeds: [queueEmbed] });
