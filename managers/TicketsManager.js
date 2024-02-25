@@ -54,8 +54,13 @@ class TicketsManager {
 
     // }
 
-    // cancel(mentor, queueEmbed) {
-
+    /**
+     * Cancel a pending mentor request in the queue.
+     * @param {import("discord.js").GuildMember} mentor 
+     * @param {import("discord.js").Message} qMessage 
+     */
+    // cancel(mentor, qMessage) {
+    //     const request = this.parseQueueEmbed(qMessage.embeds[0]);
     // }
 
     // handleDelete(ticketChannel) {
@@ -245,9 +250,29 @@ class TicketsManager {
 
     // }
 
-    // parseQueueEmbed(queueEmbed) {
+    /**
+     * @typedef {object} ParsedMentorRequest
+     * @prop {string} userID
+     * @prop {MentorRequestData} requestData
+     */
 
-    // }
+    /**
+     * Parse the mentor request queue embed into usable data.
+     * @param {import("discord.js").Embed} queueEmbed 
+     * @returns {ParsedMentorRequest}
+     */
+    parseQueueEmbed(queueEmbed) {
+        const userID = queueEmbed.footer.text.split(" ")[2];
+        const requestData = {
+            name: queueEmbed.fields[0].value,
+            team: queueEmbed.fields[1].value,
+            title: queueEmbed.title,
+            language: queueEmbed.fields[2].value,
+            techStack: queueEmbed.fields[3].value,
+            description: queueEmbed.description,
+        };
+        return { userID, requestData };
+    }
 
 }
 
