@@ -46,7 +46,12 @@ class TicketsManager {
 
     }
 
-    // claim(mentor, queueEmbed) {
+    /**
+     * Claim a pending mentor request in the queue and open the ticket.
+     * @param {import("discord.js").GuildMember} mentor 
+     * @param {import("discord.js").Message} qMessage 
+     */
+    // claim(mentor, qMessage) {
 
     // }
 
@@ -87,7 +92,7 @@ class TicketsManager {
      * @returns {import("discord.js").TextChannel}
      */
     getRequestsChannel(guild) {
-        return guild.channels.cache.find(c => c.type == "GuildText" && c.name == "mentorq");
+        return guild.channels.cache.find(c => c.type == ChannelType.GuildText && c.name == "mentorq");
     }
 
     /**
@@ -95,15 +100,7 @@ class TicketsManager {
      * @returns {import("discord.js").TextChannel}
      */
     getQueueChannel(guild) {
-        return guild.channels.cache.find(c => c.type == "GuildText" && c.name == "mentorq-queue");
-    }
-
-    /**
-     * @param {import("discord.js").Guild} guild 
-     * @returns {import("discord.js").TextChannel}
-     */
-    getLogsChannel(guild) {
-        return guild.channels.cache.find(c => c.type == "GuildText" && c.name == "mentorq-logs");
+        return guild.channels.cache.find(c => c.type == ChannelType.GuildText && c.name == "mentorq-queue");
     }
 
     /**
@@ -120,7 +117,7 @@ class TicketsManager {
      * @returns {boolean}
      */
     isActive(guild) {
-        if (this.getRequestsChannel(guild) && this.getQueueChannel(guild) && this.getLogsChannel(guild) && this.getMentorRole(guild))
+        if (this.getRequestsChannel(guild) && this.getQueueChannel(guild) && this.getMentorRole(guild))
             return true;
         else return false;
     }
@@ -137,39 +134,31 @@ class TicketsManager {
         try {
             const mentorRole = this.getMentorRole(guild) || await guild.roles.create({ name: "Mentor" });
 
-            const category = await guild.channels.create({
-                type: ChannelType.GuildText,
+            const category = guild.channels.cache.find(c => c.type == ChannelType.GuildCategory && c.name == "MentorQ") || await guild.channels.create({
+                type: ChannelType.GuildCategory,
                 name: "MentorQ",
                 permissionOverwrites: [
                     { id: guild.id, deny: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.ManageMessages] },
                 ],
             });
 
-            const requestsChannel = await guild.channels.create({
+            const requestsChannel = this.getRequestsChannel() || await guild.channels.create({
                 type: ChannelType.GuildText,
                 name: "mentorq",
                 parent: category,
             });
 
-            await guild.channels.create({
-                type: ChannelType.GuildText,
-                name: "mentorq-queue",
-                parent: category,
-                permissionOverwrites: [
-                    { id: guild.id, deny: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageMessages] },
-                    { id: mentorRole.id, allow: [PermissionFlagsBits.ViewChannel] },
-                ],
-            });
-
-            await guild.channels.create({
-                type: ChannelType.GuildText,
-                name: "mentorq-logs",
-                parent: category,
-                permissionOverwrites: [
-                    { id: guild.id, deny: [PermissionFlagsBits.ViewChannel] },
-                    { id: mentorRole.id, allow: [PermissionFlagsBits.ViewChannel] },
-                ],
-            });
+            if (!this.getQueueChannel()) {
+                await guild.channels.create({
+                    type: ChannelType.GuildText,
+                    name: "mentorq-queue",
+                    parent: category,
+                    permissionOverwrites: [
+                        { id: guild.id, deny: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageMessages] },
+                        { id: mentorRole.id, allow: [PermissionFlagsBits.ViewChannel] },
+                    ],
+                });
+            }
 
             const infoEmbed = new EmbedBuilder()
                 .setTitle("MentorQ - Request mentors during HackRU!")
@@ -252,10 +241,6 @@ class TicketsManager {
 
         return mentorRequestModal;
     }
-
-    // generateLog(action, executor, details, color) {
-
-    // }
 
     /**
      * @typedef {object} ParsedMentorRequest
