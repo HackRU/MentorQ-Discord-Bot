@@ -26,6 +26,14 @@ class UtilManager {
         return errorEmbed;
     }
 
+    infoEmbed(text) {
+        const infoEmbed = new EmbedBuilder()
+            .setColor("Blurple")
+            .setDescription("❕ " + text);
+
+        return infoEmbed;
+    }
+
     /**
      * Format a date into Discord's timestamp.
      * @param {Date} date The date to format. (optional)
