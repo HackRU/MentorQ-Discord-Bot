@@ -40,7 +40,19 @@ class TicketsManager {
             .setColor("Yellow")
             .setTimestamp();
 
-        await this.getQueueChannel(member.guild).send({ embeds: [queueEmbed] });
+        const buttons = new ActionRowBuilder()
+            .setComponents(
+                new ButtonBuilder()
+                    .setLabel("Claim")
+                    .setCustomId("claim")
+                    .setStyle(ButtonStyle.Success),
+                new ButtonBuilder()
+                    .setLabel("Cancel")
+                    .setCustomId("cancel")
+                    .setStyle(ButtonStyle.Danger),
+            );
+
+        await this.getQueueChannel(member.guild).send({ embeds: [queueEmbed], components: [buttons] });
 
         return;
 
@@ -68,7 +80,15 @@ class TicketsManager {
         ticket.members.add(mentor.id);
         ticket.members.add(member.id);
 
-        ticket.send({ content: `**Mentor:** ${mentor.toString()}\n**Hacker:** ${member.toString()}`, embeds: [newEmbed.setColor("Blurple")] });
+        const closeButton = new ActionRowBuilder()
+            .setComponents(
+                new ButtonBuilder()
+                    .setLabel("Close")
+                    .setCustomId("close")
+                    .setStyle(ButtonStyle.Danger),
+            );
+
+        ticket.send({ content: `**Mentor:** ${mentor.toString()}\n**Hacker:** ${member.toString()}`, embeds: [newEmbed.setColor("Blurple")], components: [closeButton] });
 
         member.send({ embeds: [this.MentorQ.util.infoEmbed(`Your mentor request ticket has been opened. Contact your mentor here: ${ticket.toString()}`)] }).catch(() => { });
 
