@@ -59,9 +59,16 @@ class TicketsManager {
      * @param {import("discord.js").GuildMember} mentor 
      * @param {import("discord.js").Message} qMessage 
      */
-    // cancel(mentor, qMessage) {
-    //     const request = this.parseQueueEmbed(qMessage.embeds[0]);
-    // }
+    async cancel(mentor, qMessage) {
+        const request = this.parseQueueEmbed(qMessage.embeds[0]);
+        const newEmbed = new EmbedBuilder(qMessage.embeds[0].toJSON()).setColor("Red");
+        await qMessage.edit({ content: `❗ **CANCELLED** by <@${mentor.user.id}>`, embeds: [newEmbed], components: [] });
+
+        const member = await this.MentorQ.util.fetchMember(mentor.guild, request.userID);
+        if (member) member.send({ embeds: [this.MentorQ.util.infoEmbed(`Your mentor request (\`${request.requestData.title}\`) has been **CANCELLED** by ${mentor.user.tag}.`)] }).catch(() => { });
+
+        return true;
+    }
 
     // handleDelete(ticketChannel) {
 
@@ -266,7 +273,7 @@ class TicketsManager {
         const requestData = {
             name: queueEmbed.fields[0].value,
             team: queueEmbed.fields[1].value,
-            title: queueEmbed.title,
+            title: queueEmbed.title.substring(9),
             language: queueEmbed.fields[2].value,
             techStack: queueEmbed.fields[3].value,
             description: queueEmbed.description,
