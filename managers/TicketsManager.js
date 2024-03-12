@@ -141,7 +141,7 @@ class TicketsManager {
                 type: ChannelType.GuildText,
                 name: "MentorQ",
                 permissionOverwrites: [
-                    { id: guild.id, deny: [PermissionFlagsBits.SendMessages] },
+                    { id: guild.id, deny: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.ManageMessages] },
                 ],
             });
 
@@ -156,7 +156,7 @@ class TicketsManager {
                 name: "mentorq-queue",
                 parent: category,
                 permissionOverwrites: [
-                    { id: guild.id, deny: [PermissionFlagsBits.ViewChannel] },
+                    { id: guild.id, deny: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageMessages] },
                     { id: mentorRole.id, allow: [PermissionFlagsBits.ViewChannel] },
                 ],
             });
