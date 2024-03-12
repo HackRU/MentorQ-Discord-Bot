@@ -1,4 +1,4 @@
-const { ChannelType, PermissionFlagsBits, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require("discord.js");
+const { ChannelType, PermissionFlagsBits, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ThreadAutoArchiveDuration } = require("discord.js");
 
 class TicketsManager {
     /**
@@ -51,9 +51,31 @@ class TicketsManager {
      * @param {import("discord.js").GuildMember} mentor 
      * @param {import("discord.js").Message} qMessage 
      */
-    // claim(mentor, qMessage) {
+    async claim(mentor, qMessage) {
+        const request = this.parseQueueEmbed(qMessage.embeds[0]);
+        const newEmbed = new EmbedBuilder(qMessage.embeds[0].toJSON()).setColor("Green");
 
-    // }
+        const member = await this.MentorQ.util.fetchMember(mentor.guild, request.userID);
+        if (!member) return;
+
+        const ticket = await this.getRequestsChannel().threads.create({
+            name: request.requestData.title + "-" + request.userID,
+            type: ChannelType.PrivateThread,
+            invitable: true,
+            autoArchiveDuration: ThreadAutoArchiveDuration.OneDay,
+        });
+
+        ticket.members.add(mentor.id);
+        ticket.members.add(member.id);
+
+        ticket.send({ content: `**Mentor:** ${mentor.toString()}\n**Hacker:** ${member.toString()}`, embeds: [newEmbed.setColor("Blurple")] });
+
+        member.send({ embeds: [this.MentorQ.util.infoEmbed(`Your mentor request ticket has been opened. Contact your mentor here: ${ticket.toString()}`)] }).catch(() => { });
+
+        qMessage.edit({ content: `❕ **CLAIMED** by <@${mentor.user.id}>`, embeds: [newEmbed], components: [] });
+
+        return ticket.toString();
+    }
 
     // close(ticketChannel) {
 
@@ -70,21 +92,17 @@ class TicketsManager {
         await qMessage.edit({ content: `❗ **CANCELLED** by <@${mentor.user.id}>`, embeds: [newEmbed], components: [] });
 
         const member = await this.MentorQ.util.fetchMember(mentor.guild, request.userID);
-        if (member) member.send({ embeds: [this.MentorQ.util.infoEmbed(`Your mentor request (\`${request.requestData.title}\`) has been **CANCELLED** by ${mentor.user.tag}.`)] }).catch(() => { });
+        if (member) member.send({ embeds: [this.MentorQ.util.infoEmbed(`Your mentor request (\`${request.requestData.title}\`) created ${this.MentorQ.util.createTimestamp(qMessage.createdAt)} has been **CANCELLED** by ${mentor.user.tag}.`)] }).catch(() => { });
 
         return true;
     }
-
-    // handleDelete(ticketChannel) {
-
-    // }
 
     /**
      * @param {import("discord.js").GuildMember} member 
      * @returns {import("discord.js").ThreadChannel}
      */
     getTicket(member) {
-        return this.getRequestsChannel(member.guild).threads.cache.find(t => t.name.includes(member.id));
+        return this.getRequestsChannel(member.guild)?.threads?.cache?.find(t => !t.archived && !t.locked && t.name.includes(member.id));
     }
 
     /**
