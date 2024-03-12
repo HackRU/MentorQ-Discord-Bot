@@ -97,9 +97,22 @@ class TicketsManager {
         return ticket.toString();
     }
 
-    // close(ticketChannel) {
+    /**
+     * Archive and lock a ticket thread channel.
+     * @param {import("discord.js").GuildMember} mentor 
+     * @param {import("discord.js").ThreadChannel} ticketChannel 
+     */
+    async close(mentor, ticketChannel) {
+        if (ticketChannel.archived && ticketChannel.locked) return true;
 
-    // }
+        await ticketChannel.setArchived(true, `Closed by: ${mentor.user.tag}`);
+        await ticketChannel.setLocked(true, `Closed by: ${mentor.user.tag}`);
+
+        const member = await this.MentorQ.util.fetchMember(mentor.guild, ticketChannel.name.split("-")[1]);
+        if (member) member.send({ embeds: [this.MentorQ.util.infoEmbed(`Your mentor ticket ${ticketChannel.toString()} has been **CLOSED** by ${mentor.user.tag}.`)] }).catch(() => { });
+
+        return true;
+    }
 
     /**
      * Cancel a pending mentor request in the queue.
