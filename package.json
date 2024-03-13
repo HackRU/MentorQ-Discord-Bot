@@ -1,6 +1,6 @@
 {
   "name": "mentorq-discord-bot",
-  "version": "1.0.0-dev",
+  "version": "1.0.0",
   "description": "HackRU Discord bot to facilitate a mentor queue system.",
   "main": "./bot/index.js",
   "scripts": {
