@@ -1,4 +1,4 @@
-const { readdir } = require("node:fs");
+const { readdir } = require("fs");
 
 class InteractionHandler {
     /**
@@ -19,7 +19,7 @@ class InteractionHandler {
             console.log(`INFO | Loading ${cmdFiles.length} text commands...`);
 
             for (const f in cmdFiles) {
-                const cmd = new (require(`../../bot/interactions/textcommands/${f}`))(this.MentorQ);
+                const cmd = new (require(`../../bot/interactions/textcommands/${cmdFiles[f]}`))(this.MentorQ);
                 this.MentorQ.commands.set(cmd.config.name, cmd);
             }
 
@@ -34,7 +34,7 @@ class InteractionHandler {
             console.log(`INFO | Loading ${cmdFiles.length} slash commands...`);
 
             for (const f in cmdFiles) {
-                const cmd = new (require(`../../bot/interactions/slashcommands/${f}`))(this.MentorQ);
+                const cmd = new (require(`../../bot/interactions/slashcommands/${cmdFiles[f]}`))(this.MentorQ);
                 this.MentorQ.slashCommands.set(cmd.config.name, cmd);
             }
 
@@ -53,7 +53,7 @@ class InteractionHandler {
                     console.log(`INFO | Loading ${cmdFiles.length} ${category} components...`);
 
                     for (const f in cmdFiles) {
-                        const cmd = new (require(`../../bot/interactions/components/${category}/${f}`))(this.MentorQ);
+                        const cmd = new (require(`../../bot/interactions/components/${category}/${cmdFiles[f]}`))(this.MentorQ);
                         this.MentorQ.components.set(cmd.config.name, cmd);
                     }
 

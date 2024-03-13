@@ -21,10 +21,10 @@ class EventHandler {
                     console.log(`INFO | Connecting to ${files.length} ${category} events...`);
 
                     for (const file in files) {
-                        const event = new (require(`../../bot/events/${category}/${file}`))(this.MentorQ);
+                        const event = new (require(`../../bot/events/${category}/${files[file]}`))(this.MentorQ);
 
-                        if (category == "Discord") this.MentorQ.on(file.split(".")[0], (...args) => event.run(...args));
-                        else if (category == "Process") process.on(file.split(".")[0], (...args) => event.run(...args));
+                        if (category == "discord") this.MentorQ.on(files[file].split(".")[0], (...args) => event.run(...args));
+                        else if (category == "process") process.on(files[file].split(".")[0], (...args) => event.run(...args));
                     }
 
                     console.log(`INFO | Connected to ${files.length} ${category} events`);

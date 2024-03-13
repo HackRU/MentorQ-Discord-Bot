@@ -48,11 +48,11 @@ class MentorQClient extends Client {
         /**
          * @type {import("../managers/TicketsManager")}
          */
-        this.tickets = (require("../managers/TicketsManager"))(this);
+        this.tickets = new (require("../managers/TicketsManager"))(this);
         /**
          * @type {import("../managers/UtilManager")}
          */
-        this.util = (require("../managers/UtilManager"))(this);
+        this.util = new (require("../managers/UtilManager"))(this);
 
     }
 

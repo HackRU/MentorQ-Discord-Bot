@@ -15,7 +15,6 @@ class TicketsManager {
      * @prop {string} team
      * @prop {string} title
      * @prop {string} language
-     * @prop {string} techStack
      * @prop {string} description
      */
 
@@ -34,7 +33,6 @@ class TicketsManager {
                 { name: "Name:", value: requestData.name, inline: true },
                 { name: "Team Members:", value: requestData.team, inline: true },
                 { name: "Programming Language:", value: requestData.language },
-                { name: "Tech Stack:", value: requestData.techStack },
             ])
             .setFooter({ text: `User ID: ${member.id}` })
             .setColor("Yellow")
@@ -65,12 +63,12 @@ class TicketsManager {
      */
     async claim(mentor, qMessage) {
         const request = this.parseQueueEmbed(qMessage.embeds[0]);
-        const newEmbed = new EmbedBuilder(qMessage.embeds[0].toJSON()).setColor("Green");
+        const newEmbed = new EmbedBuilder(qMessage.embeds[0].toJSON());
 
         const member = await this.MentorQ.util.fetchMember(mentor.guild, request.userID);
         if (!member) return;
 
-        const ticket = await this.getRequestsChannel().threads.create({
+        const ticket = await this.getRequestsChannel(mentor.guild).threads.create({
             name: request.requestData.title + "-" + request.userID,
             type: ChannelType.PrivateThread,
             invitable: true,
@@ -90,9 +88,9 @@ class TicketsManager {
 
         ticket.send({ content: `**Mentor:** ${mentor.toString()}\n**Hacker:** ${member.toString()}`, embeds: [newEmbed.setColor("Blurple")], components: [closeButton] });
 
-        member.send({ embeds: [this.MentorQ.util.infoEmbed(`Your mentor request ticket has been opened. Contact your mentor here: ${ticket.toString()}`)] }).catch(() => { });
+        member.send({ embeds: [this.MentorQ.util.infoEmbed(`Your mentor request ticket has been opened.\nContact your mentor here: ${ticket.toString()}`)] }).catch(() => { });
 
-        qMessage.edit({ content: `❕ **CLAIMED** by <@${mentor.user.id}>`, embeds: [newEmbed], components: [] });
+        qMessage.edit({ content: `❕ **CLAIMED** by <@${mentor.user.id}>`, embeds: [newEmbed.setColor("Green")], components: [] });
 
         return ticket.toString();
     }
@@ -105,8 +103,8 @@ class TicketsManager {
     async close(mentor, ticketChannel) {
         if (ticketChannel.archived && ticketChannel.locked) return true;
 
-        await ticketChannel.setArchived(true, `Closed by: ${mentor.user.tag}`);
         await ticketChannel.setLocked(true, `Closed by: ${mentor.user.tag}`);
+        await ticketChannel.setArchived(true, `Closed by: ${mentor.user.tag}`);
 
         const member = await this.MentorQ.util.fetchMember(mentor.guild, ticketChannel.name.split("-")[1]);
         if (member) member.send({ embeds: [this.MentorQ.util.infoEmbed(`Your mentor ticket ${ticketChannel.toString()} has been **CLOSED** by ${mentor.user.tag}.`)] }).catch(() => { });
@@ -193,13 +191,13 @@ class TicketsManager {
                 ],
             });
 
-            const requestsChannel = this.getRequestsChannel() || await guild.channels.create({
+            const requestsChannel = this.getRequestsChannel(guild) || await guild.channels.create({
                 type: ChannelType.GuildText,
                 name: "mentorq",
                 parent: category,
             });
 
-            if (!this.getQueueChannel()) {
+            if (!this.getQueueChannel(guild)) {
                 await guild.channels.create({
                     type: ChannelType.GuildText,
                     name: "mentorq-queue",
@@ -267,27 +265,19 @@ class TicketsManager {
             .setLabel("What programming language(s) are you using?")
             .setRequired(true);
 
-        const techStackInput = new TextInputBuilder()
-            .setCustomId("tech-stack-input")
-            .setStyle(TextInputStyle.Short)
-            .setLabel("What tools are you using for development (tech stack)?")
-            .setPlaceholder("It's fine if you don't know yet!")
-            .setRequired(true);
-
         const descInput = new TextInputBuilder()
             .setCustomId("desc-input")
             .setStyle(TextInputStyle.Paragraph)
             .setLabel("Project Description:")
-            .setPlaceholder("Give us any details about your project idea.")
+            .setPlaceholder("Give us any details about your project idea and your tech stack (dev tools).")
             .setRequired(true);
 
         mentorRequestModal.addComponents(
-            new ActionRowBuilder(nameInput),
-            new ActionRowBuilder(teamInput),
-            new ActionRowBuilder(titleInput),
-            new ActionRowBuilder(langInput),
-            new ActionRowBuilder(techStackInput),
-            new ActionRowBuilder(descInput),
+            new ActionRowBuilder().addComponents(nameInput),
+            new ActionRowBuilder().addComponents(teamInput),
+            new ActionRowBuilder().addComponents(titleInput),
+            new ActionRowBuilder().addComponents(langInput),
+            new ActionRowBuilder().addComponents(descInput),
         );
 
         return mentorRequestModal;
@@ -311,7 +301,6 @@ class TicketsManager {
             team: queueEmbed.fields[1].value,
             title: queueEmbed.title.substring(9),
             language: queueEmbed.fields[2].value,
-            techStack: queueEmbed.fields[3].value,
             description: queueEmbed.description,
         };
         return { userID, requestData };

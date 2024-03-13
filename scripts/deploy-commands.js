@@ -9,7 +9,7 @@ const commands = [];
 const cmdFiles = readdirSync("./bot/interactions/slashcommands/").filter(f => f.endsWith(".js"));
 
 for (const file in cmdFiles) {
-    const cmd = new (require(`../bot/interactions/slashcommands/${file}`))();
+    const cmd = new (require(`../bot/interactions/slashcommands/${cmdFiles[file]}`))();
     commands.push(transformCommand(cmd.config.commandData));
 }
 

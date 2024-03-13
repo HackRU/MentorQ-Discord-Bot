@@ -17,9 +17,9 @@ class CloseButton extends Component {
         if (!this.MentorQ.tickets.isActive(interaction.guild))
             return interaction.reply({ embeds: [this.MentorQ.util.errorEmbed("The MentorQ system is not active. Contact a server admin to complete setup process.")], ephemeral: true });
 
-        await this.MentorQ.tickets.close(interaction.member, interaction.message.channel);
-
         interaction.reply({ embeds: [this.MentorQ.util.successEmbed(`Ticket ${interaction.message.channel.toString()} has been closed.`)] });
+
+        await this.MentorQ.tickets.close(interaction.member, interaction.message.channel);
 
         return;
 

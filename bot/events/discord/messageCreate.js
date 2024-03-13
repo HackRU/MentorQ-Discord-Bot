@@ -17,7 +17,8 @@ class MessageCreateEvent extends Event {
 
         if (!message.guild || message.author.bot) return;
 
-        const prefixRegex = new RegExp(`^(<@!?${this.StormBeatz.user.id}> |${message.guild.settings.prefix})\\s*`);
+        const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const prefixRegex = new RegExp(`^(<@!?${this.MentorQ.user.id}> |${escapeRegex(this.MentorQ.config.prefix)})\\s*`);
         const prefix = message.content.match(prefixRegex)?.shift();
 
         if (!prefix || !message.content.startsWith(prefix)) return;
@@ -45,7 +46,7 @@ class MessageCreateEvent extends Event {
         if (this.MentorQ.util.handleCooldown(command, message)) return;
 
         command.run(message, args).catch(err => {
-            console.error(`COMMAND (${command.config.name}) ERROR | EXECUTOR: ${message.author.username} | GUILD: ${message.guild.name} |\n` + err.stack);
+            console.error(`-----\nCOMMAND (${command.config.name}) ERROR | EXECUTOR: ${message.author.username} | GUILD: ${message.guild.name} |\n` + err.stack + "\n-----");
 
             const errorEmbed = new EmbedBuilder()
                 .setAuthor({ name: `Command Error: ${command.config.name}`, iconURL: this.MentorQ.user.displayAvatarURL() })

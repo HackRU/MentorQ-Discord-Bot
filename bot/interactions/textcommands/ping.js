@@ -1,3 +1,4 @@
+const { EmbedBuilder } = require("discord.js");
 const TextCommand = require("../../../structures/base/BaseTextCommand");
 
 class PingCommand extends TextCommand {
@@ -20,7 +21,11 @@ class PingCommand extends TextCommand {
     async run(message) {
         const msg = await message.reply("🏓 Pinging...");
 
-        msg.edit({ embeds: [this.MentorQ.util.successEmbed(`💗 WS Heartbeat: ${Math.round(this.MentorQ.ws.ping)}ms\n🏓 API Latency: ${msg.createdTimestamp - message.createdTimestamp}ms`)] });
+        const pingEmbed = new EmbedBuilder()
+            .setDescription(`💗 WS Heartbeat: ${Math.round(this.MentorQ.ws.ping)}ms\n🏓 API Latency: ${msg.createdTimestamp - message.createdTimestamp}ms`)
+            .setColor("Blurple");
+
+        msg.edit({ content: "", embeds: [pingEmbed] });
 
         return;
     }

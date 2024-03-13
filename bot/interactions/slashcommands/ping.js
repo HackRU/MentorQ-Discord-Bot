@@ -1,3 +1,4 @@
+const { EmbedBuilder } = require("discord.js");
 const SlashCommand = require("../../../structures/base/BaseSlashCommand");
 
 class PingCommand extends SlashCommand {
@@ -22,7 +23,11 @@ class PingCommand extends SlashCommand {
     async run(interaction) {
         const msg = await interaction.reply({ content: "🏓 Pinging...", fetchReply: true });
 
-        interaction.editReply({ embeds: [this.MentorQ.util.successEmbed(`💗 WS Heartbeat: ${Math.round(this.MentorQ.ws.ping)}ms\n🏓 API Latency: ${msg.createdTimestamp - interaction.createdTimestamp}ms`)] });
+        const pingEmbed = new EmbedBuilder()
+            .setDescription(`💗 WS Heartbeat: ${Math.round(this.MentorQ.ws.ping)}ms\n🏓 API Latency: ${msg.createdTimestamp - interaction.createdTimestamp}ms`)
+            .setColor("Blurple");
+
+        interaction.editReply({ content: "", embeds: [pingEmbed] });
 
         return;
     }

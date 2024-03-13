@@ -15,10 +15,11 @@ class InteractionCreateEvent extends Event {
      */
     async run(interaction) {
 
-        if (!interaction.user.bot) return;
+        if (interaction.user.bot) return;
 
         const command = this.MentorQ.slashCommands.get(interaction.commandName) ?? this.MentorQ.components.get(interaction.customId);
         if (!command) return;
+
         if (command.config.guildRequired && !interaction.guild)
             return interaction.reply({ embeds: [this.MentorQ.util.errorEmbed("This command must be used in a server.")] });
 
@@ -41,7 +42,7 @@ class InteractionCreateEvent extends Event {
         if (this.MentorQ.util.handleCooldown(command, interaction)) return;
 
         command.run(interaction).catch(err => {
-            console.error(`INTERACTION (${command.config.name}) ERROR | EXECUTOR: ${interaction.user.username} | GUILD: ${interaction.guild?.name || "N/A"} |\n INTERACTION DATA: ${interaction.options?.data ? JSON.stringify(interaction.options.data) : "N/A"} |\n` + err.stack);
+            console.error(`-----\nINTERACTION (${command.config.name}) ERROR | EXECUTOR: ${interaction.user.username} | GUILD: ${interaction.guild?.name || "N/A"} |\n INTERACTION DATA: ${interaction.options?.data ? JSON.stringify(interaction.options.data) : "N/A"} |\n` + err.stack + "\n-----");
 
             const errorEmbed = new EmbedBuilder()
                 .setAuthor({ name: `Interaction Error: ${command.config.name}`, iconURL: this.MentorQ.user.displayAvatarURL() })

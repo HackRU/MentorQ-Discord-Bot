@@ -19,7 +19,6 @@ class MentorRequestModal extends Component {
                 team: interaction.fields.getTextInputValue("team-input"),
                 title: interaction.fields.getTextInputValue("title-input"),
                 language: interaction.fields.getTextInputValue("lang-input"),
-                techStack: interaction.fields.getTextInputValue("tech-stack-input"),
                 description: interaction.fields.getTextInputValue("desc-input"),
             });
 

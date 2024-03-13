@@ -22,12 +22,12 @@ class CloseSlashCommand extends SlashCommand {
             return interaction.reply({ embeds: [this.MentorQ.util.errorEmbed("The MentorQ system is not active. Contact a server admin to complete setup process.")], ephemeral: true });
 
         const ticket = interaction.channel;
-        if (!ticket.isThread() || ticket.ownerId !== this.MentorQ.user.id || ticket.parentId !== this.MentorQ.tickets.getRequestsChannel()?.id)
+        if (!ticket.isThread() || ticket.ownerId !== this.MentorQ.user.id || ticket.parentId !== this.MentorQ.tickets.getRequestsChannel(interaction.guild)?.id)
             return interaction.reply({ embeds: [this.MentorQ.util.errorEmbed("This is not a valid MentorQ ticket!")], ephemeral: true });
 
-        await this.MentorQ.tickets.close(interaction.member, ticket);
-
         interaction.reply({ embeds: [this.MentorQ.util.successEmbed(`Ticket ${ticket.toString()} has been closed.`)] });
+
+        await this.MentorQ.tickets.close(interaction.member, ticket);
 
         return;
 

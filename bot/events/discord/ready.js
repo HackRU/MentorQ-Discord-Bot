@@ -1,5 +1,5 @@
 const Event = require("../../../structures/base/BaseEvent");
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, ActivityType } = require("discord.js");
 
 class ReadyEvent extends Event {
     /**
@@ -12,6 +12,8 @@ class ReadyEvent extends Event {
 
     async run() {
 
+        console.log(`MentorQ (${this.MentorQ.user.tag}) is Online`);
+
         const onlineEmbed = new EmbedBuilder()
             .setTitle("MentorQ is Online")
             .addFields([
@@ -22,6 +24,8 @@ class ReadyEvent extends Event {
             .setTimestamp();
 
         this.MentorQ.logs.send({ embeds: [onlineEmbed] });
+
+        this.MentorQ.user.setPresence({ activities: [{ type: ActivityType.Watching, name: "HackRU" }] });
 
         return;
 
