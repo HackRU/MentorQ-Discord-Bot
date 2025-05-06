@@ -14,11 +14,11 @@ class MentorQClient extends Client {
                 },
                 guildMembers: {
                     interval: 1800,
-                    filter: () => mem => (mem.user.bot && mem.user.id !== this.user.id) || !mem.user.cacheTime || (Date.now() - mem.user.cacheTime) >= 600000,
+                    filter: () => mem => (mem.user.bot || !mem.user.cacheTime || (Date.now() - mem.user.cacheTime) >= 600000) && mem.user.id !== this.user.id,
                 },
                 users: {
                     interval: 1800,
-                    filter: () => user => (user.bot && user.id !== this.user.id) || !user.cacheTime || (Date.now() - user.cacheTime) >= 600000,
+                    filter: () => user => (user.bot || !user.cacheTime || (Date.now() - user.cacheTime) >= 600000) && user.id !== this.user.id,
                 },
             },
         });
